@@ -29,16 +29,23 @@ export const LoginForm = () => {
 
   const onSubmit = async (values: z.infer<typeof formSchema>) => {
     try {
-      const response = await fetch("/api/auth/login", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(values),
-      });
+      const res = await fetch(
+        "https://frontend-take-home-service.fetch.com/auth/login",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(values),
+          credentials: "include",
+        }
+      );
 
-      const result = await response.json();
-      console.log(result);
+      const data = await res.text();
+      return Response.json(data, { status: 200 });
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
     } catch (error) {
-      console.error("Error submitting data:", error);
+      return Response.json({ error: "Something went wrong" }, { status: 500 });
     }
   };
 
@@ -80,16 +87,24 @@ export const LoginForm = () => {
           type="button"
           onClick={async () => {
             try {
-              const response = await fetch("/api/dogs/breeds", {
-                method: "GET",
-                headers: { "Content-Type": "application/json" },
-                credentials: "include",
-              });
+              const res = await fetch(
+                "https://frontend-take-home-service.fetch.com/dogs/breeds",
+                {
+                  method: "GET",
+                  headers: {
+                    "Content-Type": "application/json",
+                  },
+                  credentials: "include",
+                }
+              );
 
-              const result = await response.text();
-              console.log(result);
+              const data = await res.json();
+              return Response.json(data, { status: 200 });
             } catch (error) {
-              console.error("Error submitting data:", error);
+              return Response.json(
+                { error: "Something went wrong" },
+                { status: 500 }
+              );
             }
           }}
         >
