@@ -129,17 +129,21 @@ body {
   height: 100vh;
 }
 
-.login-page {
+.page {
   display: flex;
   align-items: center;
   justify-content: center;
   height: 100%;
 }
 
-.login-card {
+.card-sm {
   min-width: 400px;
 }
 
-.login-card-header {
+.card-lg {
+  min-width: 800px;
+}
+
+.card-header {
   align-self: center;
 }

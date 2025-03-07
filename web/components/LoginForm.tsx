@@ -12,6 +12,8 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
+import { login } from "@/app/http";
+import { useRouter } from "next/navigation";
 
 const formSchema = z.object({
   name: z.string().min(2, "Please enter a minimum of two characters"),
@@ -19,6 +21,7 @@ const formSchema = z.object({
 });
 
 export const LoginForm = () => {
+  const router = useRouter();
   const loginForm = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
@@ -27,26 +30,11 @@ export const LoginForm = () => {
     },
   });
 
-  const onSubmit = async (values: z.infer<typeof formSchema>) => {
-    try {
-      const res = await fetch(
-        "https://frontend-take-home-service.fetch.com/auth/login",
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify(values),
-          credentials: "include",
-        }
-      );
-
-      const data = await res.text();
-      return Response.json(data, { status: 200 });
-    } catch {
-      return Response.json({ error: "Something went wrong" }, { status: 500 });
-    }
-  };
+  const onSubmit = (values: z.infer<typeof formSchema>) =>
+    login(values).then(() => {
+      loginForm.reset();
+      router.push("/search");
+    });
 
   return (
     <Form {...loginForm}>
@@ -80,35 +68,7 @@ export const LoginForm = () => {
             </FormItem>
           )}
         />
-        <Button type="submit">Submit</Button>
-        <Button
-          style={{ marginLeft: "10px" }}
-          type="button"
-          onClick={async () => {
-            try {
-              const res = await fetch(
-                "https://frontend-take-home-service.fetch.com/dogs/breeds",
-                {
-                  method: "GET",
-                  headers: {
-                    "Content-Type": "application/json",
-                  },
-                  credentials: "include",
-                }
-              );
-
-              const data = await res.json();
-              return Response.json(data, { status: 200 });
-            } catch {
-              return Response.json(
-                { error: "Something went wrong" },
-                { status: 500 }
-              );
-            }
-          }}
-        >
-          Breeds
-        </Button>
+        <Button type="submit">Login</Button>
       </form>
     </Form>
   );

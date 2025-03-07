@@ -9,9 +9,9 @@ import {
 
 export default function Home() {
   return (
-    <div className="login-page">
-      <Card className="login-card">
-        <CardHeader className="login-card-header">
+    <div className="page">
+      <Card className="card-sm">
+        <CardHeader className="card-header">
           <CardTitle>Welcome to Fetch</CardTitle>
           <CardDescription>Please sign in below.</CardDescription>
         </CardHeader>
