@@ -15,6 +15,7 @@ import { ColumnDef } from "@tanstack/react-table";
 import { ArrowUpDown } from "lucide-react";
 import { Loader } from "@/components/Loader";
 import { BreedSearch } from "@/components/BreedSearch";
+import { toast } from "react-toastify";
 
 export default function Search() {
   const [dogs, setDogs] = React.useState<Dog[]>([]);
@@ -113,8 +114,8 @@ export default function Search() {
             setDogs((prev) => [...prev, ...d]);
           })
         )
-        .catch((e) => {
-          console.error(e);
+        .catch(() => {
+          toast.error("Something went wrong...");
         });
     }
   }, [page, sortBy, sortOrder, selectedBreeds]);
