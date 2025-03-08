@@ -21,7 +21,6 @@ import {
   Dialog,
   DialogContent,
   DialogDescription,
-  DialogHeader,
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
@@ -194,7 +193,7 @@ export default function Search() {
 
   return (
     <div className="page">
-      <Card className="card-lg animate__animated animate__fadeInUp">
+      <Card className="card-lg">
         <CardHeader className="card-header">
           <CardTitle>Welcome to Fetch</CardTitle>
           <CardDescription>Please search for a dog below.</CardDescription>
@@ -228,8 +227,8 @@ export default function Search() {
           <CardHeader className="card-header">
             <CardTitle>Your Favorites!</CardTitle>
             <CardDescription>
-              Once you've selected your favorites, click "Find Match" to get
-              your perfect match!
+              Once you&apos;ve selected your favorites, click &quot;Find
+              Match&quot; to get your perfect match!
             </CardDescription>
           </CardHeader>
           <CardContent>
@@ -283,7 +282,7 @@ export default function Search() {
           <DialogTrigger />
           <DialogContent className="align-center justify-center">
             <DialogTitle className="text-center">
-              We've found a match!
+              We&apos;ve found a match!
             </DialogTitle>
             <DialogDescription className="text-center text-[18px]">
               Your match is{" "}
