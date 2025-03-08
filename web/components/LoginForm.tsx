@@ -36,6 +36,7 @@ export const LoginForm = () => {
   const onSubmit = (values: z.infer<typeof formSchema>) => {
     setLoading(true);
     login(values).then(() => {
+      setLoading(false);
       loginForm.reset();
       router.push("/search");
     });
