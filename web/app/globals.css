@@ -79,6 +79,10 @@
   --sidebar-accent-foreground: oklch(0.216 0.006 56.043);
   --sidebar-border: oklch(0.923 0.003 48.717);
   --sidebar-ring: oklch(0.709 0.01 56.259);
+  --purple: #7d1f70;
+  --yellow: #ffa900;
+  --green: #377d1f;
+  --blue: #1f527d;
 }
 
 .dark {
@@ -125,8 +129,10 @@
   }
 }
 
-body {
-  height: 100vh;
+@layer utilities {
+  .bg-custom {
+    background-color: var(--color-muted);
+  }
 }
 
 .page {
@@ -134,14 +140,18 @@ body {
   align-items: center;
   justify-content: center;
   height: 100%;
+  margin: 50px 0;
 }
 
 .card-sm {
-  min-width: 400px;
+  max-width: 400px;
+  min-width: 300px;
+  margin: 0px 30px;
 }
 
 .card-lg {
-  min-width: 80vw;
+  flex: 1;
+  margin: 0px 30px;
 }
 
 .card-header {
@@ -153,9 +163,21 @@ body {
   width: 400px;
 }
 
+.btn-primary {
+  background-color: var(--green);
+}
+
+.btn-clear {
+  background-color: transparent;
+  color: var(--blue);
+  box-shadow: none;
+}
+
 @media (max-width: 991px) {
   .page {
     padding: 30px;
+    flex-direction: column;
+    gap: 20px;
   }
   .card-sm,
   .card-lg {

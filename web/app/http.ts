@@ -28,3 +28,6 @@ export const searchDogs = (params?: {
 
 export const getDogsByIds = (body: string[]): Promise<Dog[]> =>
   fetchApi.post("/dogs", body).then(({ data }) => data);
+
+export const getDogMatch = (body: string[]): Promise<{ match: string }> =>
+  fetchApi.post("/dogs/match", body).then(({ data }) => data);

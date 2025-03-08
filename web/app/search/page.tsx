@@ -1,7 +1,7 @@
 "use client";
 import React from "react";
 import { DataTable } from "./data-table";
-import { getDogsByIds, searchDogs } from "../http";
+import { getDogMatch, getDogsByIds, searchDogs } from "../http";
 import {
   Card,
   CardHeader,
@@ -16,6 +16,15 @@ import { ArrowUpDown } from "lucide-react";
 import { Loader } from "@/components/Loader";
 import { BreedSearch } from "@/components/BreedSearch";
 import { toast } from "react-toastify";
+import { Checkbox } from "@/components/ui/checkbox";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog";
 
 export default function Search() {
   const [dogs, setDogs] = React.useState<Dog[]>([]);
@@ -23,6 +32,9 @@ export default function Search() {
   const [sortBy, setSortBy] = React.useState<"breed" | "name" | "age">("breed");
   const [sortOrder, setSortOrder] = React.useState("");
   const [selectedBreeds, setSelectedBreeds] = React.useState<string[]>([]);
+  const [selectedDogs, setSelectedDogs] = React.useState<Dog[]>([]);
+  const [showDialog, setShowDialog] = React.useState(false);
+  const [match, setMatch] = React.useState<Dog>();
 
   const itemsPerPage = 10;
   const batchSize = 50;
@@ -36,6 +48,61 @@ export default function Search() {
   };
 
   const columns: ColumnDef<Dog>[] = [
+    {
+      id: "select",
+      header: ({ table }) => (
+        <Checkbox
+          checked={
+            selectedDogs.length > 0 &&
+            table
+              .getRowModel()
+              .rows.every((row) =>
+                selectedDogs.some((dog) => dog.id === row.original.id)
+              )
+          }
+          onCheckedChange={(value) => {
+            if (value) {
+              setSelectedDogs((prev) => [
+                ...prev,
+                ...table
+                  .getRowModel()
+                  .rows.filter(
+                    (row) => !prev.some((dog) => dog.id === row.original.id)
+                  )
+                  .map((row) => row.original),
+              ]);
+            } else {
+              setSelectedDogs((prev) =>
+                prev.filter(
+                  (dog) =>
+                    !table
+                      .getRowModel()
+                      .rows.some((row) => row.original.id === dog.id)
+                )
+              );
+            }
+          }}
+          aria-label="Select all"
+        />
+      ),
+      cell: ({ row }) => (
+        <Checkbox
+          checked={selectedDogs.some((f) => f.id === row.original.id)}
+          onCheckedChange={() => {
+            if (selectedDogs.some((f) => f.id === row.original.id)) {
+              setSelectedDogs(
+                selectedDogs.filter((f) => f.id !== row.original.id)
+              );
+            } else {
+              setSelectedDogs((prev) => [...prev, row.original]);
+            }
+          }}
+          aria-label="Select row"
+        />
+      ),
+      enableSorting: false,
+      enableHiding: false,
+    },
     {
       accessorKey: "img",
       header: "Image",
@@ -127,7 +194,7 @@ export default function Search() {
 
   return (
     <div className="page">
-      <Card className="card-lg">
+      <Card className="card-lg animate__animated animate__fadeInUp">
         <CardHeader className="card-header">
           <CardTitle>Welcome to Fetch</CardTitle>
           <CardDescription>Please search for a dog below.</CardDescription>
@@ -156,6 +223,82 @@ export default function Search() {
           )}
         </CardContent>
       </Card>
+      {selectedDogs.length ? (
+        <Card className="card-sm animate__animated animate__fadeInRight">
+          <CardHeader className="card-header">
+            <CardTitle>Your Favorites!</CardTitle>
+            <CardDescription>
+              Once you've selected your favorites, click "Find Match" to get
+              your perfect match!
+            </CardDescription>
+          </CardHeader>
+          <CardContent>
+            <div className="max-h-[500px] overflow-auto">
+              {selectedDogs.map((x, i) => (
+                <p key={i}>{x.name}</p>
+              ))}
+            </div>
+            <div>
+              <Button
+                className="mt-4 w-full btn-primary"
+                disabled={!selectedDogs.length}
+                onClick={() => {
+                  getDogMatch(selectedDogs.map((d) => d.id))
+                    .then(({ match }) => {
+                      setMatch(selectedDogs.find((f) => f.id === match));
+                      setShowDialog(true);
+                    })
+                    .catch(() =>
+                      toast.error("An error occurred while finding your match.")
+                    );
+                }}
+              >
+                Find Your Match
+              </Button>
+              <Button
+                className="mt-2 w-full"
+                onClick={() => setSelectedDogs([])}
+              >
+                Clear All
+              </Button>
+              {match !== undefined && (
+                <Button
+                  className="mt-2 w-full btn-clear"
+                  onClick={() => setShowDialog(true)}
+                >
+                  View Match
+                </Button>
+              )}
+            </div>
+          </CardContent>
+        </Card>
+      ) : (
+        <></>
+      )}
+      {match !== undefined && (
+        <Dialog
+          open={showDialog}
+          onOpenChange={() => setShowDialog(!showDialog)}
+        >
+          <DialogTrigger />
+          <DialogContent className="align-center justify-center">
+            <DialogTitle className="text-center">
+              We've found a match!
+            </DialogTitle>
+            <DialogDescription className="text-center text-[18px]">
+              Your match is{" "}
+              <b>{selectedDogs.find((f) => f.id === match.id)?.name}</b>!
+            </DialogDescription>
+            <div className="size-[300px]">
+              <img
+                className="object-contain size-full"
+                src={match.img}
+                alt="dog-image"
+              />
+            </div>
+          </DialogContent>
+        </Dialog>
+      )}
     </div>
   );
 }
