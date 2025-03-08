@@ -157,6 +157,7 @@ body {
   .page {
     padding: 30px;
   }
+  .card-sm,
   .card-lg {
     width: 100%;
     min-width: auto;
