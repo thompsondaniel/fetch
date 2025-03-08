@@ -14,14 +14,14 @@ import { Dog } from "@/types/dogs";
 import { ColumnDef } from "@tanstack/react-table";
 import { ArrowUpDown } from "lucide-react";
 import { Loader } from "@/components/Loader";
+import { BreedSearch } from "@/components/BreedSearch";
 
 export default function Search() {
-  //   const [breeds, setBreeds] = React.useState<string[]>([]);
-  //   const [selectedBreeds, setSelectedBreeds] = React.useState<string[]>([]);
   const [dogs, setDogs] = React.useState<Dog[]>([]);
   const [page, setPage] = React.useState(1);
   const [sortBy, setSortBy] = React.useState<"breed" | "name" | "age">("breed");
   const [sortOrder, setSortOrder] = React.useState("asc");
+  const [selectedBreeds, setSelectedBreeds] = React.useState<string[]>([]);
 
   const itemsPerPage = 10;
   const batchSize = 50;
@@ -89,17 +89,14 @@ export default function Search() {
     },
   ];
 
-  //   React.useEffect(() => {
-  //     getBreeds().then((x: any) => setBreeds(x));
-  //   }, []);
-
   React.useEffect(() => {
     const batchNumber = Math.ceil(page / pagesPerBatch);
     const itemsNeeded = batchNumber * batchSize;
 
     if (dogs.length < itemsNeeded) {
       searchDogs({
-        sort: `${sortBy}:${sortOrder}`,
+        breeds: selectedBreeds,
+        sort: !sortBy || !sortOrder ? "breed:asc" : `${sortBy}:${sortOrder}`,
         from: (batchNumber - 1) * batchSize,
         size: batchSize,
       })
@@ -112,7 +109,7 @@ export default function Search() {
           console.error(e);
         });
     }
-  }, [page, sortBy, sortOrder]);
+  }, [page, sortBy, sortOrder, selectedBreeds]);
 
   const paginatedData = dogs.slice(
     (page - 1) * itemsPerPage,
@@ -128,7 +125,15 @@ export default function Search() {
         </CardHeader>
         <CardContent>
           {dogs.length ? (
-            <div className="container mx-auto py-10">
+            <div className="container mx-auto py-10 flex flex-col">
+              <BreedSearch
+                selectedBreeds={selectedBreeds}
+                setSelectedBreeds={setSelectedBreeds}
+                handleSelection={() => {
+                  setDogs([]);
+                  setPage(1);
+                }}
+              />
               <DataTable
                 columns={columns}
                 data={paginatedData}

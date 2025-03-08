@@ -12,8 +12,8 @@ export const fetchApi = axios.create({
 export const login = (params: { name: string; email: string }) =>
   fetchApi.post("/auth/login", params);
 
-// export const getBreeds = () =>
-//   fetchApi.get("/dogs/breeds").then(({ data }) => data);
+export const getBreeds = () =>
+  fetchApi.get("/dogs/breeds").then(({ data }) => data);
 
 export const searchDogs = (params?: {
   breeds?: string[];
