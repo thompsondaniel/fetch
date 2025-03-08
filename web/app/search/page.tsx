@@ -20,7 +20,7 @@ export default function Search() {
   const [dogs, setDogs] = React.useState<Dog[]>([]);
   const [page, setPage] = React.useState(1);
   const [sortBy, setSortBy] = React.useState<"breed" | "name" | "age">("breed");
-  const [sortOrder, setSortOrder] = React.useState("asc");
+  const [sortOrder, setSortOrder] = React.useState("");
   const [selectedBreeds, setSelectedBreeds] = React.useState<string[]>([]);
 
   const itemsPerPage = 10;
@@ -55,7 +55,9 @@ export default function Search() {
       header: () => {
         return (
           <Button variant="ghost" onClick={() => handleSort("name")}>
-            Name
+            <p className={`${sortBy === "name" ? "font-bold text-black" : ""}`}>
+              Name
+            </p>
             <ArrowUpDown className="ml-2 h-4 w-4" />
           </Button>
         );
@@ -66,7 +68,9 @@ export default function Search() {
       header: () => {
         return (
           <Button variant="ghost" onClick={() => handleSort("age")}>
-            Age
+            <p className={`${sortBy === "age" ? "font-bold text-black" : ""}`}>
+              Age
+            </p>
             <ArrowUpDown className="ml-2 h-4 w-4" />
           </Button>
         );
@@ -81,7 +85,11 @@ export default function Search() {
       header: () => {
         return (
           <Button variant="ghost" onClick={() => handleSort("breed")}>
-            Breed
+            <p
+              className={`${sortBy === "breed" ? "font-bold text-black" : ""}`}
+            >
+              Breed
+            </p>
             <ArrowUpDown className="ml-2 h-4 w-4" />
           </Button>
         );

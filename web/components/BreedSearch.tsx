@@ -29,7 +29,7 @@ export const BreedSearch = (props: Props) => {
   const [breeds, setBreeds] = React.useState<string[]>([]);
 
   React.useEffect(() => {
-    getBreeds().then((x: any) => setBreeds(x));
+    getBreeds().then((x: string[]) => setBreeds(x));
   }, []);
 
   return (
@@ -37,6 +37,7 @@ export const BreedSearch = (props: Props) => {
       <div className="flex">
         {props.selectedBreeds.length > 0 && (
           <Button
+            className="mr-[5px]"
             onClick={() => {
               props.setSelectedBreeds([]);
               props.handleSelection();
