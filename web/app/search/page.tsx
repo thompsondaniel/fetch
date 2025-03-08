@@ -125,7 +125,7 @@ export default function Search() {
   );
 
   return (
-    <div className="flex flex-col items-center justify-center">
+    <div className="page">
       <Card className="card-lg">
         <CardHeader className="card-header">
           <CardTitle>Welcome to Fetch</CardTitle>

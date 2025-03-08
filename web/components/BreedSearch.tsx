@@ -27,24 +27,37 @@ type Props = {
 export const BreedSearch = (props: Props) => {
   const [open, setOpen] = React.useState(false);
   const [breeds, setBreeds] = React.useState<string[]>([]);
+  const [localBreeds, setLocalBreeds] = React.useState<string[]>([]);
 
   React.useEffect(() => {
     getBreeds().then((x: string[]) => setBreeds(x));
+    setLocalBreeds(props.selectedBreeds);
   }, []);
 
   return (
-    <div className="mb-[10px] self-end">
-      <div className="flex">
-        {props.selectedBreeds.length > 0 && (
-          <Button
-            className="mr-[5px]"
-            onClick={() => {
-              props.setSelectedBreeds([]);
-              props.handleSelection();
-            }}
-          >
-            Clear
-          </Button>
+    <div className="mb-[10px] flex w-full ">
+      <div className="search-wrapper flex w-full justify-end">
+        {localBreeds.length > 0 && (
+          <>
+            <Button
+              className="mr-[5px]"
+              onClick={() => {
+                props.setSelectedBreeds([]);
+                props.handleSelection();
+              }}
+            >
+              Clear
+            </Button>
+            <Button
+              className="mr-[5px]"
+              onClick={() => {
+                props.setSelectedBreeds(localBreeds);
+                props.handleSelection();
+              }}
+            >
+              Apply
+            </Button>
+          </>
         )}
         <Popover open={open} onOpenChange={setOpen}>
           <PopoverTrigger asChild>
@@ -52,19 +65,19 @@ export const BreedSearch = (props: Props) => {
               variant="outline"
               role="combobox"
               aria-expanded={open}
-              className="w-[400px] justify-between"
+              className="search-bar justify-between"
             >
               <p className="truncate">
-                {props.selectedBreeds.length
-                  ? props.selectedBreeds.join(", ")
-                  : "Select breed..."}
+                {localBreeds.length
+                  ? localBreeds.join(", ")
+                  : "Select breed(s)"}
               </p>
               <ChevronsUpDown className="opacity-50" />
             </Button>
           </PopoverTrigger>
           <PopoverContent className="p-0">
             <Command>
-              <CommandInput placeholder="Search framework..." className="h-9" />
+              <CommandInput placeholder="Search breeds" className="h-9" />
               <CommandList>
                 <CommandEmpty>No breeds found.</CommandEmpty>
                 <CommandGroup>
@@ -73,28 +86,20 @@ export const BreedSearch = (props: Props) => {
                       key={i}
                       value={x}
                       onSelect={(currentValue) => {
-                        if (
-                          props.selectedBreeds.find((f) => f === currentValue)
-                        ) {
-                          props.setSelectedBreeds(
-                            props.selectedBreeds.filter(
-                              (f) => f !== currentValue
-                            )
+                        if (localBreeds.find((f) => f === currentValue)) {
+                          setLocalBreeds(
+                            localBreeds.filter((f) => f !== currentValue)
                           );
                         } else {
-                          props.setSelectedBreeds((prev) => [
-                            ...prev,
-                            currentValue,
-                          ]);
+                          setLocalBreeds((prev) => [...prev, currentValue]);
                         }
-                        props.handleSelection();
                       }}
                     >
                       {x}
                       <Check
                         className={cn(
                           "ml-auto",
-                          props.selectedBreeds.find((f) => f === x)
+                          localBreeds.find((f) => f === x)
                             ? "opacity-100"
                             : "opacity-0"
                         )}

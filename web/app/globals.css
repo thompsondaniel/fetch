@@ -141,9 +141,37 @@ body {
 }
 
 .card-lg {
-  min-width: 800px;
+  min-width: 80vw;
 }
 
 .card-header {
   align-self: center;
+  text-align: center;
+}
+
+.search-bar {
+  width: 400px;
+}
+
+@media (max-width: 991px) {
+  .page {
+    padding: 30px;
+  }
+  .card-lg {
+    width: 100%;
+    min-width: auto;
+  }
+}
+
+@media (max-width: 576px) {
+  .page {
+    padding: 15px;
+  }
+  .search-wrapper {
+    flex-direction: column-reverse;
+    gap: 5px;
+  }
+  .search-bar {
+    width: 100%;
+  }
 }
