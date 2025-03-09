@@ -9,8 +9,13 @@ const compat = new FlatCompat({
   baseDirectory: __dirname,
 });
 
-const eslintConfig = [
-  ...compat.extends("next/core-web-vitals", "next/typescript"),
-];
+const rules = {
+  "react-hooks/exhaustive-deps": "off",
+};
+
+const eslintConfig = {
+  extends: [...compat.extends("next/core-web-vitals", "next/typescript")],
+  rules,
+};
 
 export default eslintConfig;

@@ -38,6 +38,7 @@ export default function Search() {
   const [showDialog, setShowDialog] = React.useState(false);
   const [match, setMatch] = React.useState<Dog>();
   const router = useRouter();
+  const [showFavorites, setShowFavorites] = React.useState(false);
 
   const itemsPerPage = 10;
   const batchSize = 50;
@@ -53,6 +54,14 @@ export default function Search() {
   React.useEffect(() => {
     checkTokenExpiration(router);
   }, []);
+
+  React.useEffect(() => {
+    if (selectedDogs.length > 0) {
+      setShowFavorites(true);
+    } else {
+      setTimeout(() => setShowFavorites(false), 500);
+    }
+  }, [selectedDogs]);
 
   const columns: ColumnDef<Dog>[] = [
     {
@@ -242,8 +251,14 @@ export default function Search() {
           )}
         </CardContent>
       </Card>
-      {selectedDogs.length ? (
-        <Card className="card-sm animate__animated animate__fadeInRight self-start">
+      {showFavorites ? (
+        <Card
+          className={`card-sm animate__animated ${
+            selectedDogs.length
+              ? "animate__fadeInRight"
+              : "animate__fadeOutRight"
+          } self-start`}
+        >
           <CardHeader className="card-header">
             <CardTitle>Your Favorites!</CardTitle>
             <CardDescription>
