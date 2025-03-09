@@ -16,6 +16,7 @@ import { login } from "@/app/http";
 import { useRouter } from "next/navigation";
 import React from "react";
 import { Loader } from "./Loader";
+import useUser from "@/hooks/useUser";
 
 const formSchema = z.object({
   name: z.string().min(2, "Please enter a minimum of two characters"),
@@ -25,16 +26,18 @@ const formSchema = z.object({
 export const LoginForm = () => {
   const router = useRouter();
   const [loading, setLoading] = React.useState<boolean>(false);
+  const { user, setUser } = useUser();
   const loginForm = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
-      name: "",
-      email: "",
+      name: user?.name || "",
+      email: user?.email || "",
     },
   });
 
   const onSubmit = (values: z.infer<typeof formSchema>) => {
     setLoading(true);
+    setUser(values, 60 * 60 * 1000, router);
     login(values).then(() => {
       loginForm.reset();
       router.push("/search");

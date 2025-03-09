@@ -1,11 +1,11 @@
 "use client";
 import { Label } from "@/components/ui/label";
 import { Switch } from "@/components/ui/switch";
-import useThemeStore from "@/hooks/useTheme";
+import useTheme from "@/hooks/useTheme";
 import React from "react";
 
 export const ThemeToggle = () => {
-  const { theme, toggleTheme, setTheme } = useThemeStore();
+  const { theme, toggleTheme, setTheme } = useTheme();
 
   React.useEffect(() => {
     const savedTheme = localStorage.getItem("theme") || "light";

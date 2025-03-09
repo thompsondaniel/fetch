@@ -24,8 +24,11 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
+import useUser from "@/hooks/useUser";
+import { useRouter } from "next/navigation";
 
 export default function Search() {
+  const { user, checkTokenExpiration } = useUser();
   const [dogs, setDogs] = React.useState<Dog[]>([]);
   const [page, setPage] = React.useState(1);
   const [sortBy, setSortBy] = React.useState<"breed" | "name" | "age">("breed");
@@ -34,6 +37,7 @@ export default function Search() {
   const [selectedDogs, setSelectedDogs] = React.useState<Dog[]>([]);
   const [showDialog, setShowDialog] = React.useState(false);
   const [match, setMatch] = React.useState<Dog>();
+  const router = useRouter();
 
   const itemsPerPage = 10;
   const batchSize = 50;
@@ -45,6 +49,10 @@ export default function Search() {
     setDogs([]);
     setPage(1);
   };
+
+  React.useEffect(() => {
+    checkTokenExpiration(router);
+  }, []);
 
   const columns: ColumnDef<Dog>[] = [
     {
@@ -207,7 +215,7 @@ export default function Search() {
     <div className="page">
       <Card className="card-lg">
         <CardHeader className="card-header">
-          <CardTitle>Welcome to Fetch</CardTitle>
+          <CardTitle>Welcome {user?.name}</CardTitle>
           <CardDescription>Please search for a dog below.</CardDescription>
         </CardHeader>
         <CardContent>

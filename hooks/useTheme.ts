@@ -6,7 +6,7 @@ type Props = {
   setTheme: (theme: string) => void;
 };
 
-const useThemeStore = create<Props>((set) => ({
+const useTheme = create<Props>((set) => ({
   theme: "light",
   toggleTheme: () =>
     set((state) => {
@@ -22,4 +22,4 @@ const useThemeStore = create<Props>((set) => ({
   },
 }));
 
-export default useThemeStore;
+export default useTheme;
