@@ -122,7 +122,13 @@ export default function Search() {
       header: () => {
         return (
           <Button variant="ghost" onClick={() => handleSort("name")}>
-            <p className={`${sortBy === "name" ? "font-bold text-black" : ""}`}>
+            <p
+              className={`${
+                sortBy === "name"
+                  ? "font-bold text-black dark:text-white dark:text-white"
+                  : ""
+              }`}
+            >
               Name
             </p>
             <ArrowUpDown className="ml-2 h-4 w-4" />
@@ -135,7 +141,11 @@ export default function Search() {
       header: () => {
         return (
           <Button variant="ghost" onClick={() => handleSort("age")}>
-            <p className={`${sortBy === "age" ? "font-bold text-black" : ""}`}>
+            <p
+              className={`${
+                sortBy === "age" ? "font-bold text-black dark:text-white" : ""
+              }`}
+            >
               Age
             </p>
             <ArrowUpDown className="ml-2 h-4 w-4" />
@@ -153,7 +163,9 @@ export default function Search() {
         return (
           <Button variant="ghost" onClick={() => handleSort("breed")}>
             <p
-              className={`${sortBy === "breed" ? "font-bold text-black" : ""}`}
+              className={`${
+                sortBy === "breed" ? "font-bold text-black dark:text-white" : ""
+              }`}
             >
               Breed
             </p>
@@ -223,7 +235,7 @@ export default function Search() {
         </CardContent>
       </Card>
       {selectedDogs.length ? (
-        <Card className="card-sm animate__animated animate__fadeInRight">
+        <Card className="card-sm animate__animated animate__fadeInRight self-start">
           <CardHeader className="card-header">
             <CardTitle>Your Favorites!</CardTitle>
             <CardDescription>
