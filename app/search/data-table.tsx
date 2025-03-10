@@ -25,6 +25,7 @@ interface DataTableProps<TData, TValue> {
   data: TData[];
   onNext: () => void;
   onPrev: () => void;
+  hideNext: boolean;
   hidePrev: boolean;
 }
 
@@ -33,6 +34,7 @@ export function DataTable<TData, TValue>({
   data,
   onNext,
   onPrev,
+  hideNext,
   hidePrev,
 }: DataTableProps<TData, TValue>) {
   const [sorting, setSorting] = React.useState<SortingState>([]);
@@ -112,6 +114,7 @@ export function DataTable<TData, TValue>({
         <Button
           variant="outline"
           size="sm"
+          disabled={hideNext}
           onClick={() => {
             table.nextPage();
             onNext();

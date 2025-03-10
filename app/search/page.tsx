@@ -15,7 +15,6 @@ import { ColumnDef } from "@tanstack/react-table";
 import { ArrowUpDown } from "lucide-react";
 import { Loader } from "@/components/Loader";
 import { BreedSearch } from "@/components/BreedSearch";
-import { toast } from "react-toastify";
 import { Checkbox } from "@/components/ui/checkbox";
 import {
   Dialog,
@@ -26,6 +25,7 @@ import {
 } from "@/components/ui/dialog";
 import useUser from "@/hooks/useUser";
 import { useRouter } from "next/navigation";
+import { toast } from "sonner";
 
 export default function Search() {
   const { user, checkTokenExpiration } = useUser();
@@ -39,10 +39,8 @@ export default function Search() {
   const [match, setMatch] = React.useState<Dog>();
   const router = useRouter();
   const [showFavorites, setShowFavorites] = React.useState(false);
-
-  const itemsPerPage = 10;
-  const batchSize = 50;
-  const pagesPerBatch = batchSize / itemsPerPage;
+  const pageSize = 10;
+  const [totalResults, setTotalResults] = React.useState<number>(0);
 
   const handleSort = (column: "breed" | "name" | "age") => {
     setSortBy(column);
@@ -194,37 +192,30 @@ export default function Search() {
   ];
 
   React.useEffect(() => {
-    const batchNumber = Math.ceil(page / pagesPerBatch);
-    const itemsNeeded = batchNumber * batchSize;
-
-    if (dogs.length < itemsNeeded) {
-      searchDogs({
-        breeds: selectedBreeds,
-        sort: !sortBy || !sortOrder ? "breed:asc" : `${sortBy}:${sortOrder}`,
-        from: (batchNumber - 1) * batchSize,
-        size: batchSize,
-      })
-        .then((results) =>
-          getDogsByIds(results.resultIds).then((d) => {
-            setDogs((prev) => [...prev, ...d]);
-          })
-        )
-        .catch(() => {
-          toast.error("Something went wrong...");
+    searchDogs({
+      breeds: selectedBreeds,
+      sort: !sortBy || !sortOrder ? "breed:asc" : `${sortBy}:${sortOrder}`,
+      from: (page - 1) * pageSize,
+      size: pageSize,
+    })
+      .then((results) => {
+        setTotalResults(results.total);
+        getDogsByIds(results.resultIds).then((d) => {
+          setDogs(d);
         });
-    }
+      })
+      .catch(() => {
+        toast("Grrr...", {
+          description: "An error occurred while searching dogs.",
+        });
+      });
   }, [page, sortBy, sortOrder, selectedBreeds]);
-
-  const paginatedData = dogs.slice(
-    (page - 1) * itemsPerPage,
-    page * itemsPerPage
-  );
 
   return (
     <div className="page">
       <Card className="card-lg">
         <CardHeader className="card-header">
-          <CardTitle>Welcome {user?.name}</CardTitle>
+          <CardTitle>Welcome to Fetch</CardTitle>
           <CardDescription>Please search for a dog below.</CardDescription>
         </CardHeader>
         <CardContent>
@@ -240,10 +231,11 @@ export default function Search() {
               />
               <DataTable
                 columns={columns}
-                data={paginatedData}
+                data={dogs}
                 onNext={() => setPage((p) => p + 1)}
                 onPrev={() => setPage((p) => Math.max(p - 1, 0))}
                 hidePrev={page === 1}
+                hideNext={page * pageSize >= totalResults}
               />
             </div>
           ) : (
@@ -281,9 +273,15 @@ export default function Search() {
                     .then(({ match }) => {
                       setMatch(selectedDogs.find((f) => f.id === match));
                       setShowDialog(true);
+                      toast("Woof!", {
+                        description: "A match was found!",
+                      });
                     })
                     .catch(() =>
-                      toast.error("An error occurred while finding your match.")
+                      toast("Grrr...", {
+                        description:
+                          "An error occurred while finding your match.",
+                      })
                     );
                 }}
               >

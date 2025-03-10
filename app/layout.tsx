@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import "animate.css";
-import { ToastContainer } from "react-toastify";
+import { Toaster } from "@/components/ui/sonner";
 import { ThemeToggle } from "@/components/ThemeToggle";
 import Favicon from "../public/favicon.png";
 
@@ -34,9 +34,9 @@ export default function RootLayout({
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
-        <ToastContainer position="bottom-right" />
         <ThemeToggle />
         {children}
+        <Toaster />
       </body>
     </html>
   );
